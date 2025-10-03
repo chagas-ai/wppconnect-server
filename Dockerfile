@@ -28,8 +28,7 @@ FROM base
 WORKDIR /usr/src/wpp-server/
 RUN apk add --no-cache \
     chromium \
-    vips \
-    vips-cpp \
+    vips-dev \
     && rm -rf /var/cache/apk/*
 RUN yarn cache clean
 COPY . .
