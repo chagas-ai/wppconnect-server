@@ -26,7 +26,11 @@ RUN yarn build
 
 FROM base
 WORKDIR /usr/src/wpp-server/
-RUN apk add --no-cache chromium
+RUN apk add --no-cache \
+    chromium \
+    vips \
+    vips-cpp \
+    && rm -rf /var/cache/apk/*
 RUN yarn cache clean
 COPY . .
 COPY --from=build /usr/src/wpp-server/ /usr/src/wpp-server/
