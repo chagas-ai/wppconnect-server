@@ -23,3 +23,5 @@ userDataDir
 backupFolder
 tokens/*
 wppconnect_tokens/*
+
+.DS_Store
