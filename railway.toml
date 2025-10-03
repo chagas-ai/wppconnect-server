@@ -1,0 +1,8 @@
+# Railway deployment configuration for chagas-ai/wppconnect-server
+
+[deploy]
+numReplicas = 1
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3
+healthcheckPath = "/api/health"
+healthcheckTimeout = 100
