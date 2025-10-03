@@ -4,15 +4,12 @@ ENV NODE_ENV=production PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 COPY package.json ./
 RUN apk update && \
     apk add --no-cache \
-    vips-dev \
-    fftw-dev \
     gcc \
     g++ \
     make \
     libc6-compat \
     && rm -rf /var/cache/apk/*
 RUN yarn install --production --pure-lockfile && \
-    yarn add sharp --ignore-engines && \
     yarn cache clean
 
 FROM base AS build
@@ -28,7 +25,6 @@ FROM base
 WORKDIR /usr/src/wpp-server/
 RUN apk add --no-cache \
     chromium \
-    vips-dev \
     && rm -rf /var/cache/apk/*
 RUN yarn cache clean
 COPY . .
