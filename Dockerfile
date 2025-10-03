@@ -9,25 +9,24 @@ RUN apk update && \
     make \
     libc6-compat \
     && rm -rf /var/cache/apk/*
-RUN yarn install --production --pure-lockfile && \
-    yarn cache clean
+RUN npm install --only=production && \
+    npm cache clean --force
 
 FROM base AS build
 WORKDIR /usr/src/wpp-server
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-COPY package.json yarn.lock ./
-RUN yarn install --production=false --pure-lockfile && \
-    yarn add sharp@0.33.2 --ignore-engines && \
-    yarn cache clean
+COPY package.json ./
+RUN npm install && \
+    npm install sharp@0.33.2 --ignore-engines && \
+    npm cache clean --force
 COPY . .
-RUN yarn build
+RUN npm run build
 
 FROM base
 WORKDIR /usr/src/wpp-server/
 RUN apk add --no-cache \
     chromium \
     && rm -rf /var/cache/apk/*
-RUN yarn cache clean
 COPY . .
 COPY --from=build /usr/src/wpp-server/ /usr/src/wpp-server/
 EXPOSE 21465
