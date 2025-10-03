@@ -9,15 +9,15 @@ RUN apk update && \
     make \
     libc6-compat \
     && rm -rf /var/cache/apk/*
-RUN npm install --only=production && \
+RUN npm install --omit=dev --legacy-peer-deps && \
     npm cache clean --force
 
 FROM base AS build
 WORKDIR /usr/src/wpp-server
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 COPY package.json ./
-RUN npm install && \
-    npm install sharp@0.33.2 --ignore-engines && \
+RUN npm install --legacy-peer-deps && \
+    npm install sharp@0.33.2 --ignore-engines --legacy-peer-deps && \
     npm cache clean --force
 COPY . .
 RUN npm run build
