@@ -1,0 +1,59 @@
+version: "3.8"
+
+# Railway Docker Compose for WPPConnect
+# Drag and drop this file to Railway: https://railway.app
+#
+# Required Environment Variables (set in Railway):
+# - SECRET_KEY: Your secret key for API tokens
+#
+# Optional Environment Variables:
+# - NODE_ENV: production (default)
+# - WEBHOOK_URL: Your webhook endpoint
+# - WEBHOOK_SECRET: Webhook authentication secret
+
+services:
+  wppconnect:
+    # Use the pre-built Docker image (once published)
+    # Or Railway will build from Dockerfile in the repo
+    image: davivilela/wppconnect:latest
+
+    restart: always
+
+    environment:
+      # Required
+      SECRET_KEY: ${SECRET_KEY}
+      NODE_ENV: ${NODE_ENV:-production}
+
+      # Server configuration
+      PORT: 21465
+
+      # Optional
+      WEBHOOK_URL: ${WEBHOOK_URL:-}
+      WEBHOOK_SECRET: ${WEBHOOK_SECRET:-}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+
+    volumes:
+      # Persistent storage for WhatsApp session tokens
+      - wppconnect_tokens:/usr/src/wpp-server/tokens
+
+    ports:
+      - "21465:21465"
+
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--quiet",
+          "--tries=1",
+          "--spider",
+          "http://localhost:21465/api/health",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  wppconnect_tokens:
+    driver: local
